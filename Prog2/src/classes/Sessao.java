@@ -8,5 +8,5 @@ public class Sessao {
 	Sala sala;
 	int assentosDisponiveis;
 	
-	
+	Config c = new Config();
 }

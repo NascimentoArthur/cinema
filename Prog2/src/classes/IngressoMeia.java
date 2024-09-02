@@ -5,5 +5,7 @@ public class IngressoMeia extends Ingresso{
 	
 	public IngressoMeia(){
 		valorMeia = valor/2;
+		
+
 	}
 }

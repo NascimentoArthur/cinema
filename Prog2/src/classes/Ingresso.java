@@ -5,5 +5,5 @@ public class Ingresso {
 	Sessao sessao;
 	double valor;
 	
-
+	Config c = new Config();
 }

@@ -5,5 +5,5 @@ public class Cliente {
 	String idade;
 	Filme [] historico;
 	
-
+	Config c = new Config();
 }
