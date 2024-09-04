@@ -3,31 +3,49 @@ package app;
 import java.io.IOException;
 import java.io.ObjectInputStream.GetField;
 import java.sql.*;
+import java.util.Scanner;
+
+import classes.*;
 
 public class Main {
 
     public static void main(String[] args) {
-         
-    	Connection connection = getConnection();
+    	Scanner sc = new Scanner(System.in);
+    	int vazio = 1;
     	
-    }
+    	
+    	
+    	/*
+    	Cliente cliente = new Cliente();
+    	cliente.criarCliente();
+    	*/
+    	/*
+    	Categoria categoria = new Categoria();
+    	categoria.criaCategoria();
+    	*/
     
-    public static Connection getConnection(){
-    	// Agora conecte ao banco de dados
-        Connection connection = null ;
-        
-        String url = "jdbc:mysql://localhost:3306/cinema";
-        String username = "root"; // Substitua pelo seu usuário
-        String password = "root"; // Substitua pela sua senha
+    	/*
+    	Filme filme = new Filme();
+    	filme.criarFilme();
+		*/
     	
-    	try {
-    		connection = DriverManager.getConnection(url, username, password);
-    		System.out.println("conetou");
-			return connection;
-    	}
-    	catch (SQLException e) {
-    		e.printStackTrace();
-    		return null;
-    	}
+    	/*
+    	Sala sala = new Sala();
+    	sala.criarSala();
+    	*/
+    	
+    	Sala sala = new Sala();
+    	sala.buscarSalas(sc);
+    	
+    	/*Filme.buscarFilme();
+
+    	Filme filme = new Filme(vazio);
+    	filme = Filme.buscarFilmeEmCartaz();
+    	*/
+    	/*
+    	Catalogo catalogo = new Catalogo();
+    	System.out.println(catalogo.toString());
+    	*/
+    	sc.close();
     }
 }
