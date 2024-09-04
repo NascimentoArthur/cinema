@@ -13,11 +13,9 @@ public class Catalogo {
 
     @Override
     public String toString() {
-        // StringBuilder para construir a string com todos os filmes
         StringBuilder sb = new StringBuilder();
         sb.append("Catalogo de Filmes:\n");
         
-        // Itera sobre cada filme na lista e adiciona ao StringBuilder
         for (Filme f : filme) {
             sb.append("=================\n");
             sb.append("ID: ").append(f.getId()).append("\n");

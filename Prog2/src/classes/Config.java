@@ -8,20 +8,19 @@ import java.time.format.DateTimeFormatter;
 
 public class Config {
     private Connection connection;
-    private Scanner sc;
+    Scanner sc;
     private DateTimeFormatter formatoData;
 
     public Config() {
-        this.sc = new Scanner(System.in); // Inicializa o Scanner aqui
-        this.connection = createConnection(); // Inicializa a conexão
+        this.sc = new Scanner(System.in);
+        this.connection = createConnection();
     }
 
-    // Método estático para criar a conexão com o banco de dados
     public Connection createConnection() {
         Connection connection = null;
         String url = "jdbc:mysql://localhost:3306/db_cinema";
-        String username = "root"; // Substitua pelo seu usuário
-        String password = "user123"; // Substitua pela sua senha
+        String username = "root";
+        String password = "user123";
 
         try {
             connection = DriverManager.getConnection(url, username, password);
@@ -34,17 +33,14 @@ public class Config {
         return connection;
     }
 
-    // Método para obter a conexão existente
     public Connection getConnection() {
         return this.connection;
     }
 
-    // Método para obter o Scanner
     public Scanner getScanner() {
         return this.sc;
     }
 
-    // Método para obter o formato de data
     public DateTimeFormatter getFormatoData() {
         return this.formatoData;
     }

@@ -19,12 +19,10 @@ public class Filme {
     int emCartaz; 
     Config config;
 
-    // Construtor que inicializa Config e usa Scanner para preencher o objeto
     public Filme() {
         this.config = new Config();
         Scanner sc = config.getScanner();
 
-        // Captura as informações do filme
         System.out.print("Digite o nome do filme: ");
         this.nome = sc.nextLine();
 
@@ -32,25 +30,17 @@ public class Filme {
         this.sinopse = sc.nextLine();
 
         System.out.print("Digite a classificação do filme: ");
-        while (!sc.hasNextInt()) {
-            System.out.println("Classificação inválida. Por favor, digite um número inteiro.");
-            sc.next(); // Limpa a entrada inválida
-            System.out.print("Digite a classificação do filme: ");
-        }
-        this.classificacao = sc.nextInt();         
-        sc.nextLine(); // Limpa o buffer após a leitura de um número
-
-        // Busca categorias e preenche o atributo Categoria
-        this.categoria = Categoria.buscarCategoria(sc, config);
+        this.classificacao = sc.nextInt();
+        sc.nextLine(); // Adicione esta linha para consumir a nova linha pendente
+       
+        this.categoria = Categoria.buscarCategoria();
         
-        // Pergunta se o filme está em cartaz
         System.out.print("O filme está em cartaz? (sim/não): ");
         String resposta = sc.nextLine().toLowerCase();
         this.emCartaz = resposta.equals("sim") ? EM_CARTAZ_SIM : EM_CARTAZ_NAO;
     }
-    
+
     public Filme(int vazio) {
-        // Construtor vazio para uso em busca de filmes
     }
 
     // Método para criar o filme no banco de dados
@@ -73,13 +63,13 @@ public class Filme {
         }
     }
 
-    // Método para buscar todos os filmes do banco de dados e oferecer opção de criar novo filme
+    // Método para buscar todos os filmes do banco de dados e selecionar um
     public static List<Filme> buscarFilme() {
         int vazio = 1;
         Config config = new Config();
         Scanner sc = config.getScanner();
         List<Filme> filmes = new ArrayList<>();
-        // Query ajustada para trazer o nome da categoria usando JOIN
+
         String query = "SELECT filme.id, filme.nome, filme.sinopse, filme.id_categoria, filme.classificacao, filme.em_cartaz, categoria.nome AS nome_categoria " +
                        "FROM filme " +
                        "JOIN categoria ON filme.id_categoria = categoria.id";
@@ -99,7 +89,6 @@ public class Filme {
                 filmes.add(filme);
             }
             
-            // Exibindo os filmes no formato solicitado
             for (int i = 0; i < filmes.size(); i++) {
                 Filme filme = filmes.get(i);
                 System.out.println("=================\n" + (i + 1) + ". " + filme.getNome() +
@@ -110,7 +99,6 @@ public class Filme {
                 );
             }
 
-            // Perguntar ao usuário se deseja criar um novo filme
             System.out.print("Deseja criar um novo filme? (sim/não): ");
             String resposta = sc.nextLine().toLowerCase();
             if (resposta.equals("sim")) {
@@ -148,27 +136,25 @@ public class Filme {
                 filme.id = rs.getInt("id");
                 filme.nome = rs.getString("nome");
                 filme.sinopse = rs.getString("sinopse");
-                filme.categoria = new Categoria(rs.getInt("id_categoria"), rs.getString("nome_categoria")); 
+                filme.categoria = new Categoria(rs.getInt("id_categoria"), rs.getString("nome_categoria"));
                 filme.classificacao = rs.getInt("classificacao");
                 filme.emCartaz = rs.getInt("em_cartaz");
                 filmesEmCartaz.add(filme);
             }
 
             // Exibindo os filmes em cartaz
-            System.out.println("Selecione um filme pelo ID ou digite 0 para cancelar:");
+            System.out.println("\n ||FILMES EM CARTAZ|| Selecione um filme pelo ID ou digite 0 para cancelar:");
             for (Filme filme : filmesEmCartaz) {
-                System.out.println("=================\nID: " + filme.getId() + 
+                System.out.println("=====================================================================================\nID: " + filme.getId() + 
                                    " | Nome: " + filme.getNome() + 
                                    " | Categoria: " + filme.getCategoria().getNome() +
                                    " | Classificação: " + filme.getClassificacao() +
-                                   " | Em cartaz: " + ((filme.getEmCartaz() == 1) ? "Sim" : "Não") +
-                                   "\n====================");
+                                   " | "+
+                                   "\n=====================================================================================");
             }
 
-            // Seleção do filme pelo usuário
-            System.out.print("Digite o ID do filme desejado ou 0 para cancelar: ");
+            System.out.print("Seleção: ");
             int escolha = c.getScanner().nextInt();
-            c.getScanner().nextLine(); // Limpa o buffer após a leitura do número
             
             if (escolha == 0) {
                 System.out.println("Operação cancelada.");
@@ -191,7 +177,7 @@ public class Filme {
         }
     }
 
-    // Sobrecarga do método buscarFilmeEmCartaz que retorna uma lista de filmes quando passado um int como argumento
+    // Sobrecarga para trazer lista de filmes num formato List
     public static List<Filme> buscarFilmeEmCartaz(int view) {
         Config c = new Config();
         List<Filme> filmesEmCartaz = new ArrayList<>();
@@ -215,8 +201,6 @@ public class Filme {
                 filme.emCartaz = rs.getInt("em_cartaz");
                 filmesEmCartaz.add(filme);
             }
-
-            // Retorna a lista completa de filmes em cartaz
             return filmesEmCartaz;
 
         } catch (SQLException e) {
@@ -225,8 +209,7 @@ public class Filme {
             return null;
         }
     }
-    
-    // Getters e setters
+
     public int getId() {
         return id;
     }

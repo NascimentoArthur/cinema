@@ -9,22 +9,15 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Sala {
-    int numeroSala; // Esta variável não é mais usada, mas pode ser mantida para referência futura
+    int numeroSala; 
     int assentos;
     Config config;
 
-    // Construtor que inicializa Config e usa Scanner para preencher o objeto
     public Sala() {
         this.config = new Config();
-        Scanner sc = config.getScanner(); // Certifique-se de que getScanner() está correto
+        Scanner sc = config.getScanner();
 
-        // Captura o número de assentos da sala
         System.out.print("Digite o número de assentos da sala: ");
-        while (!sc.hasNextInt()) {
-            System.out.println("Número inválido. Por favor, digite um número inteiro.");
-            sc.next(); // Limpa a entrada inválida
-            System.out.print("Digite o número de assentos da sala: ");
-        }
         this.assentos = sc.nextInt();
     }
     
@@ -47,7 +40,7 @@ public class Sala {
         }
     }
 
-    // Método para buscar todas as salas e permitir a seleção do usuário
+    // Método para buscar todas as salas e permitir a seleção do usuário.
     public Sala buscarSalas(Scanner sc) {
         List<Sala> salas = new ArrayList<>();
         String query = "SELECT id, numero_assentos FROM sala";
@@ -75,7 +68,6 @@ public class Sala {
             int escolha;
             System.out.print("Digite o número da sala desejada: ");
             escolha = sc.nextInt();
-            sc.nextLine(); // Limpa o buffer após a leitura de um número
 
             if (escolha > 0 && escolha <= salas.size()) {
                 return salas.get(escolha - 1);

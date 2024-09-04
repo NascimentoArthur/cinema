@@ -19,10 +19,8 @@ public class Main {
     	Cliente cliente = new Cliente();
     	cliente.criarCliente();
     	*/
-    	/*
-    	Categoria categoria = new Categoria();
-    	categoria.criaCategoria();
-    	*/
+    	
+    	
     
     	/*
     	Filme filme = new Filme();
@@ -34,18 +32,19 @@ public class Main {
     	sala.criarSala();
     	*/
     	
+    	/*
     	Sala sala = new Sala();
     	sala.buscarSalas(sc);
-    	
-    	/*Filme.buscarFilme();
-
+    	*/
+    	Filme.buscarFilmeEmCartaz();
+/*
     	Filme filme = new Filme(vazio);
     	filme = Filme.buscarFilmeEmCartaz();
-    	*/
-    	/*
+    	
+    	
     	Catalogo catalogo = new Catalogo();
     	System.out.println(catalogo.toString());
-    	*/
+    */	
     	sc.close();
     }
 }
