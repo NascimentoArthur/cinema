@@ -4,7 +4,7 @@ ULTIMO COMMIT REALIZOU A ENTREGA DAS CLASSES
 
 ============================================
 * CATEGORIA
-* CLIENTE
+* CLIENTE 
 * SALA
 * FILME
 * CATALOGO
