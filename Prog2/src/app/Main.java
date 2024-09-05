@@ -19,9 +19,8 @@ public class Main {
     	Cliente cliente = new Cliente();
     	cliente.criarCliente();
     	*/
+    	    	
     	
-    	
-    
     	/*
     	Filme filme = new Filme();
     	filme.criarFilme();
@@ -36,7 +35,11 @@ public class Main {
     	Sala sala = new Sala();
     	sala.buscarSalas(sc);
     	*/
-    	Filme.buscarFilmeEmCartaz();
+
+    	
+    	Sessao.buscarSessao();
+    	
+    	
 /*
     	Filme filme = new Filme(vazio);
     	filme = Filme.buscarFilmeEmCartaz();

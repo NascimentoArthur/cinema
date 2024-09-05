@@ -82,4 +82,20 @@ public class Sala {
             return null;
         }
     }
+
+	public int getNumeroSala() {
+		return numeroSala;
+	}
+
+	public void setNumeroSala(int numeroSala) {
+		this.numeroSala = numeroSala;
+	}
+
+	public int getAssentos() {
+		return assentos;
+	}
+
+	public void setAssentos(int assentos) {
+		this.assentos = assentos;
+	}
 }
