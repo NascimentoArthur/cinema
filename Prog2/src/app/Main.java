@@ -34,20 +34,26 @@ public class Main {
     	/*
     	Sala sala = new Sala();
     	sala.buscarSalas(sc);
-    	*/
+    	
+    	
 
     	
-    	Sessao.buscarSessao();
+    	Sessao sessao = new Sessao();
+    	sessao.criaSessao();
+    */
+    	Ingresso ingresso = new Ingresso();
+    	ingresso.vendeIngresso();
+    
     	
-    	
-/*
+    	/*
+
     	Filme filme = new Filme(vazio);
     	filme = Filme.buscarFilmeEmCartaz();
     	
+    	*/
+    	//Sessao.buscaSessao();
     	
-    	Catalogo catalogo = new Catalogo();
-    	System.out.println(catalogo.toString());
-    */	
+    	
     	sc.close();
     }
 }

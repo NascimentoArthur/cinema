@@ -4,98 +4,76 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 public class Sala {
-    int numeroSala; 
-    int assentos;
-    Config config;
+    private int numeroSala;
+    private int numeroAssentos;
 
-    public Sala() {
-        this.config = new Config();
-        Scanner sc = config.getScanner();
-
-        System.out.print("Digite o número de assentos da sala: ");
-        this.assentos = sc.nextInt();
-    }
-    
+    // Construtor vazio para uso em Sessao
     public Sala(int vazio) {
-    	
     }
 
-    // Método para criar a sala no banco de dados
-    public void criarSala() {
-        String query = "INSERT INTO sala (numero_assentos) VALUES (?)";
-        
-        try (Connection connection = config.getConnection(); 
-             PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setInt(1, this.assentos);
-            stmt.executeUpdate();
-            System.out.println("Sala inserida com sucesso!");
-        } catch (SQLException e) {
-            System.err.println("Erro ao inserir sala no banco de dados:");
-            e.printStackTrace();
-        }
+    public Sala(int numeroSala, int numeroAssentos) {
+        this.numeroSala = numeroSala;
+        this.numeroAssentos = numeroAssentos;
     }
 
-    // Método para buscar todas as salas e permitir a seleção do usuário.
-    public Sala buscarSalas(Scanner sc) {
-        List<Sala> salas = new ArrayList<>();
-        String query = "SELECT id, numero_assentos FROM sala";
-        int vazio = 1;
-
-        try (Connection connection = new Config().getConnection(); 
-             PreparedStatement stmt = connection.prepareStatement(query);
+    public static Sala buscarSalas(Scanner sc) {
+        Config config = new Config();
+        String sql = "SELECT id, numero_assentos FROM sala";
+        try (Connection conn = config.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
-            
+
+            System.out.println("Salas disponíveis:");
             while (rs.next()) {
                 int numeroSala = rs.getInt("id");
-                int assentos = rs.getInt("numero_assentos");
-                Sala sala = new Sala(vazio);
-                sala.numeroSala = numeroSala;
-                sala.assentos = assentos;
-                salas.add(sala);
+                int numeroAssentos = rs.getInt("numero_assentos");
+
+                System.out.printf("Número da Sala: %d | Assentos: %d%n", numeroSala, numeroAssentos);
             }
 
-            System.out.println("Selecione uma sala:");
-            for (int i = 0; i < salas.size(); i++) {
-                Sala sala = salas.get(i);
-                System.out.println("Sala " + sala.numeroSala + " com " + sala.assentos + " assentos");
-            }
+            System.out.print("Digite o número da sala para selecionar ou 0 para cancelar: ");
+            int salaNumero = sc.nextInt();
 
-            int escolha;
-            System.out.print("Digite o número da sala desejada: ");
-            escolha = sc.nextInt();
-
-            if (escolha > 0 && escolha <= salas.size()) {
-                return salas.get(escolha - 1);
-            } else {
-                System.out.println("Seleção inválida.");
+            if (salaNumero == 0) {
+                System.out.println("Operação cancelada.");
                 return null;
             }
 
+            String sqlDetalhes = "SELECT id, numero_assentos FROM sala WHERE id = ?";
+            try (PreparedStatement stmtDetalhes = conn.prepareStatement(sqlDetalhes)) {
+                stmtDetalhes.setInt(1, salaNumero);
+                try (ResultSet rsDetalhes = stmtDetalhes.executeQuery()) {
+                    if (rsDetalhes.next()) {
+                        return new Sala(rsDetalhes.getInt("id"), rsDetalhes.getInt("numero_assentos"));
+                    } else {
+                        System.out.println("Sala não encontrada.");
+                        return null;
+                    }
+                }
+            }
+
         } catch (SQLException e) {
-            System.err.println("Erro ao buscar salas do banco de dados:");
-            e.printStackTrace();
+            System.out.println("Erro ao buscar salas: " + e.getMessage());
             return null;
         }
     }
 
-	public int getNumeroSala() {
-		return numeroSala;
-	}
+    public int getAssentos() {
+        return numeroAssentos;
+    }
 
-	public void setNumeroSala(int numeroSala) {
-		this.numeroSala = numeroSala;
-	}
+    public void setAssentos(int numeroAssentos) {
+        this.numeroAssentos = numeroAssentos;
+    }
 
-	public int getAssentos() {
-		return assentos;
-	}
+    public int getNumeroSala() {
+        return numeroSala;
+    }
 
-	public void setAssentos(int assentos) {
-		this.assentos = assentos;
-	}
+    public void setNumeroSala(int numeroSala) {
+        this.numeroSala = numeroSala;
+    }
 }

@@ -8,12 +8,12 @@ import java.time.LocalTime;
 import java.util.Scanner;
 
 public class Sessao {
-    LocalTime horario;
-    Filme filme;
-    Sala sala;
-    int assentosDisponiveis;
-    Config config;
-    int id;
+    private LocalTime horario;
+    private Filme filme;
+    private Sala sala;
+    private int assentosDisponiveis;
+    private Config config;
+    private int id;
 
     public Sessao() {
         config = new Config();
@@ -26,14 +26,12 @@ public class Sessao {
             return;
         }
 
-        Sala sala = new Sala(vazio);
-        this.sala = sala.buscarSalas(sc);
+        this.sala = Sala.buscarSalas(sc);
         if (this.sala == null) {
             System.out.println("Nenhuma sala selecionada. Operação cancelada.");
             return;
         }
 
-        this.assentosDisponiveis = sala.assentos;
         sc.nextLine();
 
         LocalTime horarioTime = null;
@@ -52,11 +50,11 @@ public class Sessao {
         }
         this.horario = horarioTime;
     }
-    
-    public Sessao(int vazio) {
-    	
-    }
 
+    public Sessao(int vazio) {
+        config = new Config();
+    }
+ 
     public void criaSessao() {
         String sql = "INSERT INTO sessao (id_filme, id_sala, hora_inicio, assentos_disponiveis) VALUES (?, ?, ?, ?)";
         try (Connection conn = config.getConnection();
@@ -84,6 +82,8 @@ public class Sessao {
     }
 
     public int verificaAssento() {
+    	Config config = new Config();
+    	
         String sql = "SELECT COUNT(*) FROM ingresso WHERE id_sessao = ?";
         int assentosOcupados = 0;
 
@@ -94,27 +94,27 @@ public class Sessao {
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     assentosOcupados = rs.getInt(1);
+          
+                    this.assentosDisponiveis = this.sala.getAssentos() - assentosOcupados;
                 }
             }
-
-            System.out.println("Número de assentos ocupados: " + assentosOcupados);
         } catch (SQLException e) {
             System.out.println("Erro ao verificar os assentos ocupados: " + e.getMessage());
         }
 
-        return assentosOcupados;
+        return this.assentosDisponiveis;
     }
 
     public void atualizaSessao() {
+    	Config config = new Config();
         int exit = this.verificaFilme();
         
-        if(exit == 1) {
-        	return;
+        if (exit == 1) {
+            return;
         }
 
-        int assentosOcupados = verificaAssento();
-        this.assentosDisponiveis -= assentosOcupados;
-
+        this.assentosDisponiveis = verificaAssento();
+        
         String sql = "UPDATE sessao SET assentos_disponiveis = ? WHERE id = ?";
         try (Connection conn = config.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -134,6 +134,8 @@ public class Sessao {
     }
 
     public int verificaFilme() {
+    	Config config = new Config();
+    	
         String QverificaFilme = "SELECT em_cartaz FROM filme WHERE id = ?";
         String QdeletarSessao = "DELETE FROM sessao WHERE id = ?";
         int exit = 0;
@@ -167,7 +169,7 @@ public class Sessao {
         return exit;
     }
 
-    public static Sessao buscarSessao() {
+    public static Sessao buscaSessao() {
         Config config = new Config();
         int vazio = 1;
 
@@ -192,7 +194,7 @@ public class Sessao {
                 String categoria = rs.getString("categoria");
 
                 System.out.printf("===========================================================================================================\n"
-                		+ "ID: %d | Horário: %s | Filme: %s | Categoria: %s | Classificação: %s%n",
+                        + "ID: %d | Horário: %s | Filme: %s | Categoria: %s | Classificação: %s%n",
                         id, horario, nomeFilme, categoria, classificacao);
             }
             System.out.printf("===========================================================================================================\n");
@@ -200,14 +202,18 @@ public class Sessao {
             Scanner sc = config.getScanner();
             System.out.print("Digite o ID da sessão para selecionar ou 0 para cancelar: ");
             int sessaoId = sc.nextInt();
-            sc.nextLine(); // Limpa o buffer do Scanner
 
             if (sessaoId == 0) {
                 System.out.println("Operação cancelada.");
                 return null;
             }
 
-            String sqlDetalhes = "SELECT s.id, s.hora_inicio, s.id_filme, s.id_sala, s.assentos_disponiveis FROM sessao s WHERE s.id = ?";
+            String sqlDetalhes = """
+            	    SELECT s.id, s.hora_inicio, s.id_filme, s.id_sala, s.assentos_disponiveis, sa.numero_assentos
+            	    FROM sessao s
+            	    JOIN sala sa ON s.id_sala = sa.id
+            	    WHERE s.id = ?
+            	""";
             try (PreparedStatement stmtDetalhes = conn.prepareStatement(sqlDetalhes)) {
                 stmtDetalhes.setInt(1, sessaoId);
                 try (ResultSet rsDetalhes = stmtDetalhes.executeQuery()) {
@@ -219,6 +225,7 @@ public class Sessao {
                         sessao.filme.setId(rsDetalhes.getInt("id_filme"));
                         sessao.sala = new Sala(vazio);
                         sessao.sala.setNumeroSala(rsDetalhes.getInt("id_sala"));
+                        sessao.sala.setAssentos(rsDetalhes.getInt("numero_assentos"));
                         sessao.assentosDisponiveis = rsDetalhes.getInt("assentos_disponiveis");
 
                         return sessao;
@@ -235,4 +242,43 @@ public class Sessao {
         }
     }
 
+    public LocalTime getHorario() {
+        return horario;
+    }
+
+    public void setHorario(LocalTime horario) {
+        this.horario = horario;
+    }
+
+    public Filme getFilme() {
+        return filme;
+    }
+
+    public void setFilme(Filme filme) {
+        this.filme = filme;
+    }
+
+    public Sala getSala() {
+        return sala;
+    }
+
+    public void setSala(Sala sala) {
+        this.sala = sala;
+    }
+
+    public int getAssentosDisponiveis() {
+        return assentosDisponiveis;
+    }
+
+    public void setAssentosDisponiveis(int assentosDisponiveis) {
+        this.assentosDisponiveis = assentosDisponiveis;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 }
