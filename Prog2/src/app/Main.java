@@ -41,9 +41,8 @@ public class Main {
     	Sessao sessao = new Sessao();
     	sessao.criaSessao();
     */
-    	Ingresso ingresso = new Ingresso();
-    	ingresso.vendeIngresso();
-    
+    	Cliente cliente = new Cliente();
+    	cliente.criaCliente();
     	
     	/*
 

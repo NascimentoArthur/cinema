@@ -7,13 +7,15 @@ import java.sql.SQLException;
 import java.util.Scanner;
 
 public class Ingresso {
-    private Cliente cliente;
-    private Sessao sessao;
-    private double valor;
-    private Config config;
-    private int id;
+    Cliente cliente;
+    Sessao sessao;
+    double valor;
+    Config config;
+    private String tipoIngressoStr = "INTEIRA";
+    int id;
 
     public Ingresso() {
+    	
         this.config = new Config();
         Scanner sc = config.getScanner();
 
@@ -34,7 +36,7 @@ public class Ingresso {
     }
 
     // Coloca o ingresso no banco de dados
-    public void vendeIngresso() {
+    public void vendeIngresso(String tipoIngressoStr) {
         int assento = this.sessao.verificaAssento();
 
         if (assento <= 0) {
@@ -50,7 +52,7 @@ public class Ingresso {
             stmt.setInt(2, sessao.getId());
             stmt.setDouble(3, this.valor);
             stmt.setInt(4, assento);
-            stmt.setString(5, "INTEIRA"); // Preenche a coluna 'tipo' com o valor ENUM 'INTEIRA'
+            stmt.setString(5, tipoIngressoStr);
 
             int rowsAffected = stmt.executeUpdate();
             if (rowsAffected > 0) {
