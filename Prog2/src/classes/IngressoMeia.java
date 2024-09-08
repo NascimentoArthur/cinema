@@ -2,10 +2,8 @@ package classes;
 
 import java.util.Scanner;
 
-
 public class IngressoMeia extends Ingresso{
 	private String tipoIngressoStr = "MEIA_ENTRADA";
-	
 	public IngressoMeia(){
 		this.config = new Config();
         Scanner sc = config.getScanner();

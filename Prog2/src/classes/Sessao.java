@@ -241,6 +241,109 @@ public class Sessao {
             return null;
         }
     }
+    
+    public static Sessao buscaSessao(Filme historico) {
+        Config config = new Config();
+        int vazio = 1;
+        String categoriaHistorico = historico.getCategoria().getNome(); // Assumindo que a classe Filme tem um método getCategoria() que retorna um objeto Categoria com o nome.
+
+        String sql = """
+                SELECT s.id, s.hora_inicio, f.nome AS nome_filme, f.classificacao, c.nome AS categoria
+                FROM sessao s
+                JOIN filme f ON s.id_filme = f.id
+                JOIN categoria c ON f.id_categoria = c.id
+                WHERE c.nome = ? 
+                ORDER BY f.nome, s.hora_inicio
+                """;
+
+        String sqlOutros = """
+                SELECT s.id, s.hora_inicio, f.nome AS nome_filme, f.classificacao, c.nome AS categoria
+                FROM sessao s
+                JOIN filme f ON s.id_filme = f.id
+                JOIN categoria c ON f.id_categoria = c.id
+                WHERE c.nome != ?
+                ORDER BY f.nome, s.hora_inicio
+                """;
+
+        try (Connection conn = config.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             PreparedStatement stmtOutros = conn.prepareStatement(sqlOutros)) {
+
+            stmt.setString(1, categoriaHistorico);
+            ResultSet rs = stmt.executeQuery();
+
+            System.out.println("Filmes baseados na sua última escolha:");
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                LocalTime horario = rs.getTime("hora_inicio").toLocalTime();
+                String nomeFilme = rs.getString("nome_filme");
+                String classificacao = rs.getString("classificacao");
+                String categoria = rs.getString("categoria");
+
+                System.out.printf("===========================================================================================================\n"
+                        + "ID: %d | Horário: %s | Filme: %s | Categoria: %s | Classificação: %s%n",
+                        id, horario, nomeFilme, categoria, classificacao);
+            }
+
+            stmtOutros.setString(1, categoriaHistorico);
+            ResultSet rsOutros = stmtOutros.executeQuery();
+
+            System.out.println("\nOutros filmes em cartaz:");
+            while (rsOutros.next()) {
+                int id = rsOutros.getInt("id");
+                LocalTime horario = rsOutros.getTime("hora_inicio").toLocalTime();
+                String nomeFilme = rsOutros.getString("nome_filme");
+                String classificacao = rsOutros.getString("classificacao");
+                String categoria = rsOutros.getString("categoria");
+
+                System.out.printf("===========================================================================================================\n"
+                        + "ID: %d | Horário: %s | Filme: %s | Categoria: %s | Classificação: %s%n",
+                        id, horario, nomeFilme, categoria, classificacao);
+            }
+            System.out.printf("===========================================================================================================\n");
+
+            Scanner sc = config.getScanner();
+            System.out.print("Digite o ID da sessão para selecionar ou 0 para cancelar: ");
+            int sessaoId = sc.nextInt();
+
+            if (sessaoId == 0) {
+                System.out.println("Operação cancelada.");
+                return null;
+            }
+
+            String sqlDetalhes = """
+            	    SELECT s.id, s.hora_inicio, s.id_filme, s.id_sala, s.assentos_disponiveis, sa.numero_assentos
+            	    FROM sessao s
+            	    JOIN sala sa ON s.id_sala = sa.id
+            	    WHERE s.id = ?
+            	""";
+            try (PreparedStatement stmtDetalhes = conn.prepareStatement(sqlDetalhes)) {
+                stmtDetalhes.setInt(1, sessaoId);
+                try (ResultSet rsDetalhes = stmtDetalhes.executeQuery()) {
+                    if (rsDetalhes.next()) {
+                        Sessao sessao = new Sessao(vazio);
+                        sessao.id = rsDetalhes.getInt("id");
+                        sessao.horario = rsDetalhes.getTime("hora_inicio").toLocalTime();
+                        sessao.filme = new Filme(vazio);
+                        sessao.filme.setId(rsDetalhes.getInt("id_filme"));
+                        sessao.sala = new Sala(vazio);
+                        sessao.sala.setNumeroSala(rsDetalhes.getInt("id_sala"));
+                        sessao.sala.setAssentos(rsDetalhes.getInt("numero_assentos"));
+                        sessao.assentosDisponiveis = rsDetalhes.getInt("assentos_disponiveis");
+
+                        return sessao;
+                    } else {
+                        System.out.println("Sessão não encontrada.");
+                        return null;
+                    }
+                }
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao buscar sessões: " + e.getMessage());
+            return null;
+        }
+    }
 
     public LocalTime getHorario() {
         return horario;

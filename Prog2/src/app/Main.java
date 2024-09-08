@@ -7,6 +7,7 @@ import java.util.Scanner;
 
 import classes.*;
 
+
 public class Main {
 
     public static void main(String[] args) {
@@ -41,9 +42,9 @@ public class Main {
     	Sessao sessao = new Sessao();
     	sessao.criaSessao();
     */
-    	Cliente cliente = new Cliente();
-    	cliente.criaCliente();
-    	
+    	Cinema cinema = new Cinema();
+    	cinema.buscaCinema();
+//    	System.out.println(cinema.getFaturamento());
     	/*
 
     	Filme filme = new Filme(vazio);

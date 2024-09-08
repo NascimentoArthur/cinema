@@ -15,7 +15,7 @@ public class Ingresso {
     int id;
 
     public Ingresso() {
-    	
+    	Filme historico;
         this.config = new Config();
         Scanner sc = config.getScanner();
 
@@ -25,6 +25,15 @@ public class Ingresso {
             return;
         }
 
+        historico = this.verificarHistorico();
+
+        if (historico != null) {
+        	this.sessao = Sessao.buscaSessao(historico);
+            if (this.sessao == null) {
+                System.out.println("Nenhuma sessão selecionada. Operação cancelada.");
+                return;
+            }
+        }
         this.sessao = Sessao.buscaSessao();
         if (this.sessao == null) {
             System.out.println("Nenhuma sessão selecionada. Operação cancelada.");
@@ -37,6 +46,7 @@ public class Ingresso {
 
     // Coloca o ingresso no banco de dados
     public void vendeIngresso(String tipoIngressoStr) {
+    	Config config = new Config();
         int assento = this.sessao.verificaAssento();
 
         if (assento <= 0) {
@@ -73,8 +83,9 @@ public class Ingresso {
     }
 
     public Filme verificarHistorico() {
+    	int vazio = 1;
         String sql = """
-                SELECT f.id, f.nome, f.id_classificacao, c.id AS id_categoria, c.nome AS nome_categoria, s.hora_inicio
+                SELECT f.id, f.nome, f.classificacao, c.id AS id_categoria, c.nome AS nome_categoria, s.hora_inicio
                 FROM ingresso i
                 JOIN sessao s ON i.id_sessao = s.id
                 JOIN filme f ON s.id_filme = f.id
@@ -93,21 +104,19 @@ public class Ingresso {
                 if (rs.next()) {
                     int idFilme = rs.getInt("id");
                     String nomeFilme = rs.getString("nome");
-                    int classificacao = rs.getInt("id_classificacao");
+                    int classificacao = rs.getInt("classificacao");
                     int idCategoria = rs.getInt("id_categoria");
                     String nomeCategoria = rs.getString("nome_categoria");
 
-                    // Cria o objeto Categoria com as informações obtidas
                     Categoria categoria = new Categoria();
                     categoria.setId(idCategoria);
                     categoria.setNome(nomeCategoria);
 
-                    // Cria um objeto Filme com as informações obtidas
-                    Filme filme = new Filme();
+                    Filme filme = new Filme(vazio);
                     filme.setId(idFilme);
                     filme.setNome(nomeFilme);
                     filme.setClassificacao(classificacao);
-                    filme.setCategoria(categoria); // Define o objeto Categoria
+                    filme.setCategoria(categoria);
 
                     return filme;
                 } else {
