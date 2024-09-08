@@ -15,26 +15,30 @@ public class Cinema {
     public Cinema() {
     }
 
-    public void atualizaCinema() {
-        String sqlSum = "SELECT SUM(valor) AS total_faturamento FROM ingresso";
+    public void atualizaCinema(Double valor) {
+        String sqlSelect = "SELECT faturamento FROM cinema WHERE id = ?";
         String sqlUpdate = "UPDATE cinema SET faturamento = ? WHERE id = ?";
-
+        
         Config config = new Config();
-
+        
         try (Connection conn = config.getConnection();
-             PreparedStatement stmtSum = conn.prepareStatement(sqlSum);
-             ResultSet rs = stmtSum.executeQuery()) {
-
+             PreparedStatement stmtSelect = conn.prepareStatement(sqlSelect)) {
+          
+            stmtSelect.setInt(1, this.id);
+            ResultSet rs = stmtSelect.executeQuery();
+            
             if (rs.next()) {
-                double totalFaturamento = rs.getDouble("total_faturamento");
-                this.faturamento = totalFaturamento;
+                double faturamentoAtual = rs.getDouble("faturamento");
+
+                double novoFaturamento = faturamentoAtual + valor;
+                this.faturamento = novoFaturamento;
 
                 try (PreparedStatement stmtUpdate = conn.prepareStatement(sqlUpdate)) {
                     stmtUpdate.setDouble(1, this.faturamento);
                     stmtUpdate.setInt(2, this.id);
-
+                    
                     int rowsAffected = stmtUpdate.executeUpdate();
-
+                    
                     if (rowsAffected > 0) {
                         System.out.println("Faturamento atualizado com sucesso para o cinema com ID: " + this.id);
                     } else {
@@ -42,8 +46,9 @@ public class Cinema {
                     }
                 }
             } else {
-                System.out.println("Nenhum ingresso encontrado.");
+                System.out.println("Cinema com ID: " + this.id + " não encontrado.");
             }
+            
         } catch (SQLException e) {
             System.err.println("Erro ao atualizar o faturamento do cinema:");
             e.printStackTrace();

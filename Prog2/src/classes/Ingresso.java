@@ -34,18 +34,21 @@ public class Ingresso {
                 return;
             }
         }
-        this.sessao = Sessao.buscaSessao();
-        if (this.sessao == null) {
-            System.out.println("Nenhuma sessão selecionada. Operação cancelada.");
-            return;
+        else {
+        	this.sessao = Sessao.buscaSessao();
+            if (this.sessao == null) {
+                System.out.println("Nenhuma sessão selecionada. Operação cancelada.");
+                return;
+            }
         }
+        
 
         System.out.println("Insira o valor integral do ingresso.");
         this.valor = sc.nextDouble();
     }
 
     // Coloca o ingresso no banco de dados
-    public void vendeIngresso(String tipoIngressoStr) {
+    public void vendeIngresso(Cinema cinema, String tipoIngressoStr) {
     	Config config = new Config();
         int assento = this.sessao.verificaAssento();
 

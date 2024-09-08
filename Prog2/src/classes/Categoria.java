@@ -24,6 +24,7 @@ public class Categoria {
 
     // Método para buscar todas as categorias no banco.
     public static Categoria buscarCategoria() {
+    	Config config = new Config();
         List<Categoria> categorias = new ArrayList<>();
         String query = "SELECT id, nome FROM categoria";
 
@@ -69,7 +70,7 @@ public class Categoria {
     }
 
     // Método para criar uma nova categoria no banco.
-    private void criaCategoria() {
+    public void criaCategoria() {
         System.out.print("Digite o nome da nova categoria: ");
         this.nome = config.sc.nextLine();
 

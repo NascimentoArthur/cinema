@@ -1,18 +1,14 @@
-LABEL RECOMENDADO PELO PROFESSOR.
+ULTIMO COMMIT REALIZOU A ENTREGA FINAL DO PROJETO
 
-ULTIMO COMMIT REALIZOU A ENTREGA DAS CLASSES
 
+O PROEJO INICIA SOLICITANDO A CRIAÇÃO DE UM NOVO CINEMA OU A SELEÇÃO DE UM JÁ EXISTENTE
+
+APÓS ESSA ESCOLHA, É APRESENTADO UMA TELA PARA INTERAÇÃO COM AS SEGUINTES INTERFACES
 ============================================
-* CATEGORIA
-* CLIENTE 
-* SALA
-* FILME
-* CATALOGO
-* SESSÃO
-
+* CADASTRO
+* VENDAS
+* RELATÓRIO
+============================================
   
 Classe Config serve como auxiliar para criação de conexões com o banco, criação de scanners, etc.
-Esta classe continuará sendo incrementada de acordo com a necessidade de DEV.
-============================================
-Classe main ainda não contém a interface, esta sendo usada apenas para teste das classes.
-============================================
+

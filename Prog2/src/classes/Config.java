@@ -8,7 +8,7 @@ import java.time.format.DateTimeFormatter;
 
 public class Config {
     private Connection connection;
-    Scanner sc;
+    public Scanner sc;
     private DateTimeFormatter formatoData;
 
     public Config() {
@@ -24,7 +24,6 @@ public class Config {
 
         try {
             connection = DriverManager.getConnection(url, username, password);
-            System.out.println("Conectado ao banco");
         } catch (SQLException e) {
             System.err.println("Falha ao conectar ao banco de dados:");
             e.printStackTrace();
