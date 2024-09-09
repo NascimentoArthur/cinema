@@ -8,12 +8,12 @@ import java.time.LocalTime;
 import java.util.Scanner;
 
 public class Sessao {
-    private LocalTime horario;
-    private Filme filme;
-    private Sala sala;
-    private int assentosDisponiveis;
-    private Config config;
-    private int id;
+    LocalTime horario;
+    Filme filme;
+    Sala sala;
+    int assentosDisponiveis;
+    Config config;
+    int id;
 
     public Sessao() {
         config = new Config();

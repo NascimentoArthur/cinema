@@ -11,7 +11,7 @@ public class Ingresso {
     Sessao sessao;
     double valor;
     Config config;
-    private String tipoIngressoStr = "INTEIRA";
+    String tipoIngressoStr = "INTEIRA";
     int id;
 
     public Ingresso() {

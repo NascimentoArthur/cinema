@@ -2,7 +2,7 @@ package classes;
 
 
 public class IngressoMeia extends Ingresso{
-	private String tipoIngressoStr = "MEIA_ENTRADA";
+	String tipoIngressoStr = "MEIA_ENTRADA";
 	
 	public IngressoMeia() {
         this.config = new Config();

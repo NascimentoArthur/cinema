@@ -7,9 +7,9 @@ import java.sql.SQLException;
 import java.time.format.DateTimeFormatter;
 
 public class Config {
-    private Connection connection;
+    Connection connection;
     public Scanner sc;
-    private DateTimeFormatter formatoData;
+    DateTimeFormatter formatoData;
 
     public Config() {
         this.sc = new Scanner(System.in);
